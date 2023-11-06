@@ -264,7 +264,10 @@ def vert_pareto_plot(df, np_plot='+5', fmt=None, colors=None, confidence=False,
         sens = sens.reindex(sort_sens.index)
         sort_nsens = nsens.mean(axis=1).sort_values(ascending=False)
         nsens = nsens.reindex(sort_nsens.index)
-        df = sens.append(nsens)
+        ##### As of pandas 2.0, append (previously deprecated) was removed.
+        ##### need to use concat instead
+        # df = sens.append(nsens)
+        df = pd.concat([sens, nsens])
 
         params = df.index.tolist()
         df.fillna(0, inplace=True)

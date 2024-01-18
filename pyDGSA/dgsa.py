@@ -12,6 +12,10 @@ import pandas as pd
 from .interact_util import interact_distance, interact_boot_distance
 from tqdm.notebook import tqdm
 
+
+########################
+# From author raw code
+########################
 def cluster_cdf_distance(prior_cdf, cluster_parameters, percentiles=None):
     """Helper function to calculate the L1-norm distance between the prior 
     distribution of each parameter and the class-conditional distribution 
@@ -41,6 +45,37 @@ def cluster_cdf_distance(prior_cdf, cluster_parameters, percentiles=None):
     cluster_distance = np.sum(abs(cluster_cdf - prior_cdf), axis=0)
 
     return cluster_distance
+
+
+# def cluster_cdf_distance(prior_cdf, cluster_parameters, percentiles=None):
+#     """Helper function to calculate the L1-norm distance between the prior 
+#     distribution of each parameter and the class-conditional distribution 
+#     of each parameter. In other words, the distance between the cdf of a 
+#     parameter for all model runs and the cdf of a parameter for model runs 
+#     within an individual cluster.
+    
+#     params:
+#         parameters [array(float)]: array of shape (n_parameters, n_simulations) 
+#                 containing the parameter sets used for each model run
+#         cluster [array(int)]: array of indices corresponding to the models within 
+#                 this cluster. Indices must match rows in parameters.
+        
+#     returns:
+#         cluster_distance [array(float)]: array of shape (n_parameters,) containing 
+#                 the distance between cdfs for each parameter
+#     """
+    
+#     if percentiles is None:
+#         percentiles = np.arange(1,100)
+        
+#     # Calculate the cdf of parameters in this individual cluster
+#     cluster_cdf = np.percentile(cluster_parameters, percentiles, axis=0)
+
+#     # Calculate the L1-norm between the cdf of parameters in this cluster
+#     # and the cdf of the entire population
+#     cluster_distance = np.sum(abs(cluster_cdf - prior_cdf), axis=0)
+
+#     return cluster_distance/(np.max(prior_cdf,axis=0) - np.min(prior_cdf,axis=0))
 
 
 def dgsa(parameters, labels, parameter_names=None, n_boots=3000, quantile=0.95, 
@@ -141,7 +176,10 @@ def dgsa(parameters, labels, parameter_names=None, n_boots=3000, quantile=0.95,
 
     ### Step 3. 
     # Calculate the normalized distances (d/d_95)
+    ##### This is the original setting #####
     cluster_sensitivities = cluster_distances/boot_quantiles
+    ########################################
+
 
     # Calculate the confidence interval, if requested
     if confidence:
